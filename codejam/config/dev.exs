@@ -3,10 +3,10 @@ import Config
 # Configure your database
 config :codejam, Codejam.Repo,
   username: "postgres",
-  password: "",
+  password: System.get_env("CODEJAM_POSTGRES_PASSWORD"),
   hostname: "localhost",
-  database: "codejam_dev",
-  port: 5432,
+  database: System.get_env("CODEJAM_POSTGRES_DATABASE"),
+  port: System.get_env("CODEJAM_POSTGRES_PORT"),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -24,7 +24,7 @@ config :codejam, CodejamWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "--secret--",
+  secret_key_base: System.get_env("CODEJAM_SECRET_KEY_BASE"),
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}

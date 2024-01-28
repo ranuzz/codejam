@@ -7,7 +7,7 @@ defmodule CodejamWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_codejam_key",
-    signing_salt: "--secret--",
+    signing_salt: System.get_env("CODEJAM_SESSION_SALT"),
     same_site: "Lax"
   ]
 

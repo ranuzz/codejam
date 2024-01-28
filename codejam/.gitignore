@@ -38,6 +38,7 @@ npm-debug.log
 # local files
 *.mp4
 **/dev_seeds.exs
+**/env.sh
 
 # removing fly.io deploymnet files for now
 lib/codejam/release.ex

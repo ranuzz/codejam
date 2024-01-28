@@ -63,8 +63,8 @@ config :phoenix, :json_library, Jason
 
 # github oauth config
 config :codejam, Codejam.Github.Oauth,
-  github_client_id: System.fetch_env("CODEJAM_GITHUB_CLIENT_ID") |> elem(1),
-  github_client_secret: System.fetch_env("CODEJAM_GITHUB_CLIENT_SECRET") |> elem(1),
+  github_client_id: System.get_env("CODEJAM_GITHUB_CLIENT_ID"),
+  github_client_secret: System.get_env("CODEJAM_GITHUB_CLIENT_SECRET"),
   github_redirect_uri: "http://localhost:4000/oauth/callback/github"
 
 # Import environment specific config. This must remain at the bottom
