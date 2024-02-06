@@ -23,7 +23,6 @@ defmodule Codejam.Github.Api do
     with {:ok, access_token} <- get_token(organization_id),
          {:ok, response} <-
            http_get(@github_api_list_repos, get_headers(access_token)) do
-      # Logger.debug("#{inspect(response)}")
       Enum.each(response, &IO.puts(&1["url"]))
     end
   end
@@ -36,8 +35,6 @@ defmodule Codejam.Github.Api do
     with {:ok, access_token} <- get_token(organization_id),
          {:ok, response} <-
            http_get(@github_get_user_info, get_headers(access_token)) do
-      # Logger.debug("#{inspect(response)}")
-      # Enum.each(response, &IO.puts(&1["url"]))
       {:ok, response["login"]}
     end
   end
@@ -55,7 +52,6 @@ defmodule Codejam.Github.Api do
                "+user:" <> user_id,
              get_headers(access_token)
            ) do
-      # Enum.each(response, &IO.puts(&1["url"]))
       {:ok, response}
     end
   end
@@ -71,7 +67,6 @@ defmodule Codejam.Github.Api do
              String.replace(commits_url, "{/sha}", "/" <> branch),
              get_headers(access_token)
            ) do
-      # Enum.each(response, &IO.puts(&1["url"]))
       {:ok, response["sha"]}
     end
   end
@@ -108,8 +103,6 @@ defmodule Codejam.Github.Api do
           # Create file tree
           file_tree = Crawl.crawl(extracted_location)
 
-          IO.inspect(file_tree)
-
           Codejam.Github.Crawl.FileTree.create_inodes(
             file_tree,
             nil,
@@ -118,7 +111,7 @@ defmodule Codejam.Github.Api do
           )
 
         _ ->
-          IO.puts("oops")
+          Logger.debug(~c"repo download failed")
       end
     end
   end
@@ -193,7 +186,6 @@ defmodule Codejam.Github.Api do
         {:ok, parsed_body}
 
       {:error, reason} ->
-        IO.inspect(reason)
         {:error, reason}
     end
   end
@@ -206,7 +198,6 @@ defmodule Codejam.Github.Api do
         {:ok, location}
 
       {:error, reason} ->
-        IO.inspect(reason)
         {:error, reason}
 
       _ ->

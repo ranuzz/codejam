@@ -62,8 +62,6 @@ defmodule CodejamWeb.ProjectLive.New do
         }
       end)
 
-    IO.inspect(hd(repos))
-
     socket =
       stream(socket, :repos, repos)
       |> assign(:form, to_form(params))
@@ -73,7 +71,6 @@ defmodule CodejamWeb.ProjectLive.New do
 
   @impl true
   def handle_event("validate_create_project", params, socket) do
-    IO.inspect(params)
     {:noreply, socket}
   end
 

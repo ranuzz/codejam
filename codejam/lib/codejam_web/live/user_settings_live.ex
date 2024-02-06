@@ -3,7 +3,6 @@ defmodule CodejamWeb.UserSettingsLive do
 
   alias Codejam.Accounts
 
-  # Imports only from/2 of Ecto.Query
   import Ecto.Query, only: [from: 2]
 
   def render(assigns) do
@@ -283,19 +282,6 @@ defmodule CodejamWeb.UserSettingsLive do
     {:noreply, socket}
   end
 
-  # def handle_event("update_avatar", params, socket) do
-  #   %{"user" => user_params} = params
-  #   user = socket.assigns.current_user
-
-  #   case Accounts.update_user_avatar(user, user_params) do
-  #     {:ok, _applied_user} ->
-  #       {:noreply, socket |> put_flash(:info, "Avatar updated")}
-
-  #     {:error, changeset} ->
-  #       {:noreply, assign(socket, :avatar_form, to_form(Map.put(changeset, :action, :insert)))}
-  #   end
-  # end
-
   def handle_event("validate_avatar", _params, socket) do
     {:noreply, socket}
   end
@@ -305,26 +291,12 @@ defmodule CodejamWeb.UserSettingsLive do
   end
 
   def handle_event("update_avatar", _params, socket) do
-    # IO.puts("update avatar")
-    # IO.inspect(params)
-    # IO.inspect(socket.assigns.current_user.id)
-
     uploaded_files =
       consume_uploaded_entries(socket, :avatar, fn %{path: path}, _entry ->
-        # dest =
-        #   Path.join(Application.app_dir(:codejam, "priv/static/uploads"), Path.basename(path))
-
         {:ok, binary_data} = File.read(path)
         base64_image_data = Base.encode64(binary_data)
 
-        IO.puts("Base64-encoded image data: #{base64_image_data}")
-
-        # IO.inspect(binary_data)
-
         Accounts.update_user_avatar(socket.assigns.current_user, %{"avatar" => base64_image_data})
-        # You will need to create `priv/static/uploads` for `File.cp!/2` to work.
-        # File.cp!(path, dest)
-        # IO.puts(Path.basename(dest))
         {:ok, "/"}
       end)
 
@@ -390,7 +362,6 @@ defmodule CodejamWeb.UserSettingsLive do
         {:noreply, assign(socket, trigger_submit: true, password_form: password_form)}
 
       {:error, changeset} ->
-        IO.puts("update_password failed")
         {:noreply, assign(socket, password_form: to_form(changeset))}
     end
   end

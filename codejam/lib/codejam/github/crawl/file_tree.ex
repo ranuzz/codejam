@@ -6,9 +6,6 @@ defmodule Codejam.Github.Crawl.FileTree do
   end
 
   def create_inodes(tree_node, parent_id, snapshot_id, organization_id) do
-    IO.puts(tree_node.id)
-    IO.puts(parent_id)
-
     {_, inode} =
       Codejam.Canvas.create_from_tree_node(
         tree_node,

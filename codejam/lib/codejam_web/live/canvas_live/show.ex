@@ -320,9 +320,7 @@ defmodule CodejamWeb.CanvasLive.Show do
   end
 
   defp update_root_file(file_tree, inode_id) do
-    IO.puts(inode_id)
     x = Enum.map(file_tree, &load_children(&1, inode_id))
-    IO.inspect(x)
     x
   end
 end
