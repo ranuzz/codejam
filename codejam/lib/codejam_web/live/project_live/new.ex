@@ -70,7 +70,7 @@ defmodule CodejamWeb.ProjectLive.New do
   end
 
   @impl true
-  def handle_event("validate_create_project", params, socket) do
+  def handle_event("validate_create_project", _params, socket) do
     {:noreply, socket}
   end
 
