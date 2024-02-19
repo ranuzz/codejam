@@ -48,6 +48,9 @@ defmodule Codejam.Objectstorage.S3 do
   end
 
   def get_object(bucket_name, path) do
-    AWS.S3.get_object(client(), bucket_name, path)
+    case AWS.S3.get_object(client(), bucket_name, path) do
+      {:ok, response, _} -> {:ok, response["Body"]}
+      {:error, _} -> {:error}
+    end
   end
 end

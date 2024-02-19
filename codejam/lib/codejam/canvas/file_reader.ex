@@ -29,4 +29,14 @@ defmodule FileReader do
     end)
     |> Enum.to_list()
   end
+
+  def add_line_numbers(lines) do
+    Stream.map(lines, & &1)
+    |> Stream.map(&String.trim/1)
+    |> Stream.with_index()
+    |> Stream.map(fn {line, index} ->
+      {Integer.to_string(index + 1), %{raw: line, notes: [], highlighted: ""}}
+    end)
+    |> Enum.to_list()
+  end
 end

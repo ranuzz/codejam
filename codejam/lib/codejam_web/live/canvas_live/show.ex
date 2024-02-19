@@ -140,16 +140,21 @@ defmodule CodejamWeb.CanvasLive.Show do
 
     cond do
       inode.is_file ->
-        {:ok, content} = File.read(inode.path)
-        parsed_file_content = FileReader.read_file_with_index_map(inode.path)
+        {:ok, content} =
+          Codejam.Objectstorage.S3.get_object(socket.assigns.organization_id, inode.path)
 
         file_language = List.last(String.split(inode.path, "."))
+        IO.puts(content)
+        IO.inspect(FileReader.add_line_numbers(String.split(content, "\n")))
 
         socket =
           socket
           |> assign(:current_inode, inode.id)
           |> assign(:file_content, content)
-          |> assign(:parsed_file_content, parsed_file_content)
+          |> assign(
+            :parsed_file_content,
+            FileReader.add_line_numbers(String.split(content, "\n"))
+          )
           |> assign(:file_language, file_language)
           |> assign(:open_files, [])
           |> assign(
