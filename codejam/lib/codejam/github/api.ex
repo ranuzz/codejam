@@ -12,7 +12,6 @@ defmodule Codejam.Github.Api do
   @github_api_list_repos "https://api.github.com/user/repos"
   @github_api_search_repos "https://api.github.com/search/repositories?q="
   @github_get_user_info "https://api.github.com/user"
-  @github_download_local_dir "tmp/"
 
   @doc """
   list_repo
@@ -81,34 +80,43 @@ defmodule Codejam.Github.Api do
   download repo
   https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-zip
   """
-  def download_repo(api_url, branch, snapshot_id, snapshot_sha, organization_id) do
+  def download_repo(api_url, branch, project_id, snapshot_id, _snapshot_sha, organization_id) do
     download_api_url = api_url <> "/zipball/" <> branch
 
     with {:ok, access_token} <- get_token(organization_id),
          {:ok, download_location} <-
            http_get_redirect(download_api_url, get_headers(access_token)) do
       Logger.debug(download_location)
+      github_download_local_dir = System.get_env("CODEJAM_LOCAL_DATA_DIR")
 
       case http_get_download(download_location) do
         {:ok, data} ->
-          zip_location = @github_download_local_dir <> snapshot_sha <> ".zip"
-          extracted_location = @github_download_local_dir <> snapshot_sha
+          zip_location = github_download_local_dir <> snapshot_id <> ".zip"
+          extracted_location = github_download_local_dir <> snapshot_id
+          # create local dir
+          File.mkdir(github_download_local_dir)
           # download Zip file
           File.write(zip_location, data)
           # Unzip
           System.cmd("unzip", [zip_location, "-d", extracted_location])
-          # cleanup
-          System.cmd("rm", [zip_location])
-
+          # Push everything to minio
           # Create file tree
           file_tree = Crawl.crawl(extracted_location)
 
+          Codejam.Objectstorage.S3.create_bucket(organization_id)
+
+          # create bucket for organization
           Codejam.Github.Crawl.FileTree.create_inodes(
             file_tree,
             nil,
+            project_id,
             snapshot_id,
             organization_id
           )
+
+          # cleanup everything
+          System.cmd("rm", [zip_location])
+          File.rm_rf(extracted_location)
 
         _ ->
           Logger.debug(~c"repo download failed")

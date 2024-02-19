@@ -11,3 +11,10 @@ export CODEJAM_POSTGRES_PORT=""
 # Phoenix internal
 export CODEJAM_SESSION_SALT=""
 export CODEJAM_SECRET_KEY_BASE=""
+
+# S3 access
+export CODEJAM_S3_ACCESS_KEY=""
+export CODEJAM_S3_SECRET_KEY=""
+export CODEJAM_S3_ENDPOINT=""
+export CODEJAM_S3_REGION=""
+export CODEJAM_LOCAL_DATA_DIR=""

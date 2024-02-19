@@ -90,6 +90,7 @@ defmodule Codejam.Project do
     Codejam.Github.Api.download_repo(
       api_url,
       default_branch,
+      created_project.id,
       created_snapshot.id,
       latest_commits_hash_sha,
       organization_id

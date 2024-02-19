@@ -24,10 +24,21 @@ defmodule Codejam.Canvas do
     })
   end
 
-  def create_from_tree_node(tree_node, parent_inode_id, snapshot_id, organization_id) do
+  def create_from_tree_node(tree_node, parent_inode_id, project_id, snapshot_id, organization_id) do
+    bucket_path =
+      String.replace(
+        tree_node.data.path,
+        System.get_env("CODEJAM_LOCAL_DATA_DIR"),
+        project_id <> "/"
+      )
+
+    if tree_node.data.is_file do
+      Codejam.Objectstorage.S3.put_object(organization_id, bucket_path, tree_node.data.path)
+    end
+
     Repo.insert(%Inode{
-      path: tree_node.data.path,
-      name: tree_node.data.path,
+      path: bucket_path,
+      name: bucket_path,
       is_file: tree_node.data.is_file,
       is_dir: tree_node.data.is_dir,
       parent_inode_id: parent_inode_id,
