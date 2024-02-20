@@ -39,10 +39,5 @@ npm-debug.log
 *.mp4
 **/dev_seeds.exs
 **/env.sh
-
-# removing fly.io deploymnet files for now
-lib/codejam/release.ex
-rel/
-.dockerignore
-Dockerfile
-fly.toml
+**/.env
+**/env
