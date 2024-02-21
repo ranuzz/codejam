@@ -1,0 +1,70 @@
+version: "3.8"
+
+name: codejam
+
+services:
+  codejam_phoenix:
+    image: codejam/phoenix
+    build:
+      context: ./codejam
+      dockerfile: codejam.dev.Dockerfile
+    container_name: codejam_phoenix
+    env_file: ./codejam/dev/.env
+    environment:
+      APP_ENV: development
+    ports:
+      - "4000:4000"
+    volumes:
+      - codejam-data:/tmp/codejam-data
+    networks:
+      - codejam_network
+    restart: unless-stopped
+    depends_on:
+      codejam_postgres:
+        condition: service_healthy
+        restart: true
+      codejam_minio:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  codejam_postgres:
+    image: postgres:16.2
+    container_name: codejam_postgres
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=codejamdb
+    ports:
+      - "7432:5432"
+    networks:
+      - codejam_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  codejam_minio:
+    image: minio/minio:latest
+    container_name: codejam_minio
+    volumes:
+      - codejam-minio-data:/tmp/minio-data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - codejam_network
+    restart: unless-stopped
+    command: server --console-address ":9001" /tmp/minio-data
+
+volumes:
+  codejam-data:
+  codejam-minio-data:
+
+networks:
+  codejam_network:
+    driver: bridge
