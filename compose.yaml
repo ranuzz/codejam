@@ -12,6 +12,9 @@ services:
     env_file: ./codejam/dev/.env
     environment:
       APP_ENV: development
+      MIX_ENV: dev
+      DATABASE_URL: ecto://postgres@codejam_postgres/codejamdb
+      SECRET_KEY_BASE: SECRET_KEY_BASE
     ports:
       - "4000:4000"
     volumes:
