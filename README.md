@@ -68,6 +68,15 @@ start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+### docker compose
+
+make sure the `SECRET_KEY_BASE` is set in `compose.yaml`
+
+```
+docker compose up
+docker compose down
+```
+
 ## Deployment
 
 Ready to run in production?
