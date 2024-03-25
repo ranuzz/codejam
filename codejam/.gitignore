@@ -39,6 +39,5 @@ npm-debug.log
 *.mp4
 **/dev_seeds.exs
 **/.env.sh
-**/env.sh
 **/.env
 **/env
