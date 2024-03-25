@@ -14,7 +14,7 @@ defmodule Codejam.Explorer.Project do
     field(:default_branch, :string)
 
     belongs_to(:organization, Codejam.Accounts.Organization, type: :binary_id)
-    belongs_to(:integration, Codejam.Integration.Integration, type: :binary_id)
+    belongs_to(:integration, Codejam.Integrations.Integration, type: :binary_id)
     timestamps(type: :utc_datetime)
   end
 

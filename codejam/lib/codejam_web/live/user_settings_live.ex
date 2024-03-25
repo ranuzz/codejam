@@ -237,7 +237,7 @@ defmodule CodejamWeb.UserSettingsLive do
 
     integrations =
       Codejam.Repo.all(
-        from integtration in Codejam.Integration,
+        from integtration in Codejam.Integrations.Integration,
           where: integtration.organization_id == ^params["id"]
       )
 
@@ -254,7 +254,7 @@ defmodule CodejamWeb.UserSettingsLive do
       |> assign(:name_form, to_form(name_changeset))
       |> assign(:avatar_form, to_form(avatar_changeset))
       |> assign(:trigger_submit, false)
-      |> assign(:oauth_url, Codejam.Github.Oauth.get_authorization_url(params["id"]))
+      |> assign(:oauth_url, Codejam.Integrations.Github.Oauth.get_authorization_url(params["id"]))
       |> assign(:is_github_connected, is_github_connected)
       |> assign(:uploaded_files, [])
       |> assign(:invite_form, to_form(%{"email" => nil}))

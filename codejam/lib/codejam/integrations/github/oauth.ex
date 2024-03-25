@@ -55,7 +55,7 @@ defmodule Codejam.Integrations.Github.Oauth do
         # {"access_token":"","token_type":"bearer","scope":""}
         {_, parsed_body} = Poison.decode(body)
 
-        Codejam.Integration.add_integration(
+        Codejam.Integrations.Integration.add_integration(
           "github",
           parsed_body["access_token"],
           organization_id

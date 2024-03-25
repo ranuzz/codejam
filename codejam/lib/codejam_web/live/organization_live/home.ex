@@ -7,11 +7,14 @@ defmodule CodejamWeb.OrganizationLive.Home do
   def mount(%{"id" => id}, _session, socket) do
     integrations =
       Codejam.Repo.all(
-        from integtration in Codejam.Integration, where: integtration.organization_id == ^id
+        from integtration in Codejam.Integrations.Integration,
+          where: integtration.organization_id == ^id
       )
 
     projects =
-      Codejam.Repo.all(from project in Codejam.Project, where: project.organization_id == ^id)
+      Codejam.Repo.all(
+        from project in Codejam.Explorer.Project, where: project.organization_id == ^id
+      )
 
     socket =
       socket

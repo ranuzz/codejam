@@ -6,7 +6,8 @@
 
 body {
   font-family: 'Noto Sans', 'Noto Sans Symbols 2', sans-serif;
-  overflow: 'hidden'
+  overflow: 'hidden';
+  min-height: 100vh;
 }
 
 .material-symbols-outlined-small {

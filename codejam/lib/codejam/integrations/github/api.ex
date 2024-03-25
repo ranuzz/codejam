@@ -7,7 +7,7 @@ defmodule Codejam.Integrations.Github.Api do
 
   alias Codejam.Github.Crawl
   alias Codejam.Repo
-  alias Codejam.Integration
+  alias Codejam.Integrations.Integration
 
   @github_api_list_repos "https://api.github.com/user/repos"
   @github_api_search_repos "https://api.github.com/search/repositories?q="
