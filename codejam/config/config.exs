@@ -61,12 +61,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# github oauth config
-config :codejam, Codejam.Github.Oauth,
-  github_client_id: System.get_env("CODEJAM_GITHUB_CLIENT_ID"),
-  github_client_secret: System.get_env("CODEJAM_GITHUB_CLIENT_SECRET"),
-  github_redirect_uri: "http://localhost:4000/oauth/callback/github"
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

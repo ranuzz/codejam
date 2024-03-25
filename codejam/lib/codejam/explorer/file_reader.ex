@@ -1,4 +1,4 @@
-defmodule FileReader do
+defmodule Codejam.Explorer.FileReader do
   def read(filename) do
     File.stream!(filename)
     |> Stream.map(&String.trim/1)

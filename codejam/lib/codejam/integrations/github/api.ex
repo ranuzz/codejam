@@ -1,4 +1,4 @@
-defmodule Codejam.Github.Api do
+defmodule Codejam.Integrations.Github.Api do
   require Logger
   require HTTPoison
   require Poison

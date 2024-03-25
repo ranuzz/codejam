@@ -1,15 +1,17 @@
-defmodule Codejam.Objectstorage.S3 do
+defmodule Codejam.Blobs.S3 do
   def client do
+    config = Application.get_env(:codejam, Codejam.Blob.Config)
+
     client =
       AWS.Client.create(
-        System.get_env("CODEJAM_S3_ACCESS_KEY"),
-        System.get_env("CODEJAM_S3_SECRET_KEY"),
-        System.get_env("CODEJAM_S3_REGION")
+        config[:access_key],
+        config[:secret_key],
+        config[:region]
       )
 
     client = %{client | port: 9000}
     client = %{client | proto: "http"}
-    client = %{client | endpoint: System.get_env("CODEJAM_S3_ENDPOINT")}
+    client = %{client | endpoint: config[:endpoint]}
     client
   end
 

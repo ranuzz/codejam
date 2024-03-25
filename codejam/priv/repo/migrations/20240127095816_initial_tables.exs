@@ -1,13 +1,22 @@
 defmodule Codejam.Repo.Migrations.CreateInitialTables do
   use Ecto.Migration
 
-  # alpha version of initial tables ** not final **
+  def common() do
+    add(:created_by_membership_id, references(:memberships, type: :uuid, on_delete: :delete_all),
+      null: false
+    )
+
+    add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
+      null: false
+    )
+
+    timestamps(type: :utc_datetime)
+  end
 
   def change do
     # extension to support case insensitive string column type
     execute("CREATE EXTENSION IF NOT EXISTS citext", "")
 
-    # users table
     create table(:users, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:email, :citext, null: false)
@@ -15,14 +24,12 @@ defmodule Codejam.Repo.Migrations.CreateInitialTables do
       add(:confirmed_at, :naive_datetime)
       add(:role, :string, null: false)
       add(:name, :string)
-      add(:avatar, :string, size: 1_000_000)
+      add(:avatar, :string)
       timestamps(type: :utc_datetime)
     end
 
     create(unique_index(:users, [:email]))
 
-    # user_tokens table
-    # users_tokens 1:N users
     create table(:users_tokens, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:user_id, references(:users, type: :uuid, on_delete: :delete_all), null: false)
@@ -35,7 +42,6 @@ defmodule Codejam.Repo.Migrations.CreateInitialTables do
     create(index(:users_tokens, [:user_id]))
     create(unique_index(:users_tokens, [:context, :token]))
 
-    # organizations table
     create table(:organizations, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:name, :string)
@@ -44,10 +50,6 @@ defmodule Codejam.Repo.Migrations.CreateInitialTables do
 
     create(unique_index(:organizations, [:name]))
 
-    # memberships tables
-    # A user can be a member in multiple organizations
-    # memberships 1:N organizations
-    # memberships 1:N users
     create table(:memberships, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:role, :string)
@@ -68,18 +70,11 @@ defmodule Codejam.Repo.Migrations.CreateInitialTables do
     create(index(:memberships, [:organization_id]))
     create(index(:memberships, [:user_id]))
 
-    # integrations table: represent the credential to access an external service
-    # integrations N:1 organization_id
     create table(:integrations, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:service, :string)
       add(:access_token, :string)
-
-      add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      timestamps(type: :utc_datetime)
+      common()
     end
 
     create(index(:integrations, [:organization_id]))
@@ -91,96 +86,65 @@ defmodule Codejam.Repo.Migrations.CreateInitialTables do
       add(:api_url, :string)
       add(:commits_url, :string)
       add(:default_branch, :string)
-
-      add(:integration_id, references(:integrations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      timestamps(type: :utc_datetime)
+      add(:registered_branches, {:array, :string})
+      common()
     end
 
     create(index(:projects, [:organization_id]))
 
-    create table(:snapshots, primary_key: false) do
+    create table(:git_objects, primary_key: false) do
       add(:id, :uuid, primary_key: true)
+      add(:object_type, :string)
+      add(:sha, :string)
       add(:branch, :string)
-      add(:commit_hash, :string)
-      add(:storage_path, :string)
-      add(:project_id, references(:projects, type: :uuid, on_delete: :delete_all), null: false)
-
-      add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      timestamps(type: :utc_datetime)
-    end
-
-    create(index(:snapshots, [:organization_id]))
-
-    create table(:inodes, primary_key: false) do
-      add(:id, :uuid, primary_key: true)
+      add(:tag, :string)
+      add(:content, :string)
       add(:path, :string)
-      add(:name, :string)
-      add(:is_file, :boolean)
-      add(:is_dir, :boolean)
-      add(:parent_inode_id, references(:inodes, type: :uuid, on_delete: :delete_all), null: true)
-      add(:snapshot_id, references(:snapshots, type: :uuid, on_delete: :delete_all), null: false)
-
-      add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      timestamps(type: :utc_datetime)
+      add(:project_id, references(:projects, type: :uuid, on_delete: :delete_all), null: false)
+      common()
     end
 
-    create(index(:inodes, [:organization_id]))
+    create(index(:git_objects, [:organization_id]))
 
-    create table(:discussions, primary_key: false) do
+    create table(:notebooks, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:title, :string)
-
-      add(:snapshot_id, references(:snapshots, type: :uuid, on_delete: :delete_all), null: false)
-
-      add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      timestamps(type: :utc_datetime)
+      add(:kind, :string)
+      add(:project_id, references(:projects, type: :uuid, on_delete: :delete_all), null: false)
+      common()
     end
 
-    create(index(:discussions, [:organization_id]))
+    create(index(:notebooks, [:organization_id]))
 
-    # notes table: represent a note created in a git supported code repository
-    # notes N:1 organizations
-    # notes N:1 memberships
     create table(:notes, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:content, :string)
-      # represent a block of code formatted as `line_start:line_end`
       add(:lines, :string)
-      add(:parent_note_id, references(:notes, type: :uuid, on_delete: :delete_all), null: true)
-      add(:inode_id, references(:inodes, type: :uuid, on_delete: :delete_all), null: false)
+      add(:kind, :string)
+      add(:seq, :integer)
 
-      add(:discussion_id, references(:discussions, type: :uuid, on_delete: :delete_all),
+      add(:git_object_id, references(:git_objects, type: :uuid, on_delete: :delete_all),
         null: false
       )
+
+      add(:notebook_id, references(:notebooks, type: :uuid, on_delete: :delete_all), null: false)
+      common()
+    end
+
+    create(index(:notes, [:organization_id]))
+
+    create table(:note_members, primary_key: false) do
+      add(:id, :uuid, primary_key: true)
+      add(:association, :string)
+      add(:note_id, references(:notes, type: :uuid, on_delete: :delete_all), null: true)
 
       add(:membership_id, references(:memberships, type: :uuid, on_delete: :delete_all),
         null: false
       )
 
-      add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
-        null: false
-      )
-
-      timestamps(type: :utc_datetime)
+      common()
     end
 
-    create(index(:notes, [:organization_id]))
-    create(index(:notes, [:membership_id]))
+    create(index(:note_members, [:organization_id]))
   end
 end

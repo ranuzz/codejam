@@ -9,63 +9,6 @@ defmodule Codejam.Canvas do
   alias Codejam.Canvas
   alias Codejam.Repo
 
-  alias Codejam.Canvas.{Snapshot, Inode, Note}
-
-  @doc """
-  add snapshot
-  """
-  def add_snapshot(branch, commit_hash, storage_path, project_id, organization_id) do
-    Repo.insert(%Snapshot{
-      branch: branch,
-      commit_hash: commit_hash,
-      storage_path: storage_path,
-      project_id: project_id,
-      organization_id: organization_id
-    })
-  end
-
-  def create_from_tree_node(tree_node, parent_inode_id, project_id, snapshot_id, organization_id) do
-    bucket_path =
-      String.replace(
-        tree_node.data.path,
-        System.get_env("CODEJAM_LOCAL_DATA_DIR"),
-        project_id <> "/"
-      )
-
-    if tree_node.data.is_file do
-      Codejam.Objectstorage.S3.put_object(organization_id, bucket_path, tree_node.data.path)
-    end
-
-    Repo.insert(%Inode{
-      path: bucket_path,
-      name: bucket_path,
-      is_file: tree_node.data.is_file,
-      is_dir: tree_node.data.is_dir,
-      parent_inode_id: parent_inode_id,
-      snapshot_id: snapshot_id,
-      organization_id: organization_id
-    })
-  end
-
-  def create_note(content, lines, inode_id, discussion_id, membership_id, organization_id) do
-    Repo.insert(%Note{
-      content: content,
-      lines: lines,
-      inode_id: inode_id,
-      discussion_id: discussion_id,
-      membership_id: membership_id,
-      organization_id: organization_id
-    })
-  end
-
-  def list_notes do
-    [%Note{}]
-  end
-
-  def get_note(_id) do
-    %Note{}
-  end
-
   def get_file_tree(snapshot_id) do
     Repo.all(
       from ir in Canvas.Inode,

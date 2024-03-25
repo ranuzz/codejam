@@ -1,11 +1,11 @@
-defmodule Codejam.Github.Crawl do
+defmodule Codejam.Git.Crawl do
   def crawl(dir) do
     crawl(dir, nil)
   end
 
   defp crawl(dir, parent_id) do
-    cur_id = Codejam.Github.Crawl.Idgen.create_id()
-    cur_file = %Codejam.Github.Crawl.FileInfo{path: dir, is_file: false, is_dir: true}
+    cur_id = Codejam.Git.Crawl.Idgen.create_id()
+    cur_file = %Codejam.Git.Crawl.FileInfo{path: dir, is_file: false, is_dir: true}
 
     {dirs, files} =
       File.ls!(dir)
@@ -14,9 +14,9 @@ defmodule Codejam.Github.Crawl do
     file_nodes =
       files
       |> Enum.map(
-        &Codejam.Github.Crawl.FileTree.new(
-          Codejam.Github.Crawl.Idgen.create_id(),
-          %Codejam.Github.Crawl.FileInfo{path: Path.join(dir, &1), is_file: true, is_dir: false},
+        &Codejam.Git.Crawl.FileTree.new(
+          Codejam.Git.Crawl.Idgen.create_id(),
+          %Codejam.Git.Crawl.FileInfo{path: Path.join(dir, &1), is_file: true, is_dir: false},
           cur_id,
           []
         )

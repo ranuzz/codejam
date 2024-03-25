@@ -115,3 +115,25 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+config :codejam, Codejam.Github.Oauth,
+  github_client_id: System.get_env("CODEJAM_GITHUB_CLIENT_ID"),
+  github_client_secret: System.get_env("CODEJAM_GITHUB_CLIENT_SECRET"),
+  github_redirect_uri: "http://localhost:4000/oauth/callback/github"
+
+config :codejam, Codejam.Database.Config,
+  database: System.get_env("CODEJAM_POSTGRES_DATABASE"),
+  password: System.get_env("CODEJAM_POSTGRES_PASSWORD"),
+  port: System.get_env("CODEJAM_POSTGRES_PORT"),
+  url: System.get_env("CODEJAM_POSTGRES_URL")
+
+config :codejam, Codejam.Blob.Config,
+  access_key: System.get_env("CODEJAM_S3_ACCESS_KEY"),
+  secret_key: System.get_env("CODEJAM_S3_SECRET_KEY"),
+  endpoint: System.get_env("CODEJAM_S3_ENDPOINT"),
+  region: System.get_env("CODEJAM_S3_REGION"),
+  local_data_dir: System.get_env("CODEJAM_LOCAL_DATA_DIR")
+
+config :codejam, Codejam.InternalConfig,
+  session_salt: System.get_env("CODEJAM_SESSION_SALT"),
+  secret_key_base: System.get_env("CODEJAM_SECRET_KEY_BASE")
