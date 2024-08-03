@@ -1,0 +1,22 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* This file is for your main application CSS */
+
+body {
+  font-family: 'Noto Sans', 'Noto Sans Symbols 2', sans-serif;
+  min-height: 100vh;
+}
+
+.material-symbols-outlined-small {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 200,
+    'GRAD' 0,
+    'opsz' 20
+}
+
+.border-bottom {
+  border-bottom: 1px solid #aeb0af;
+}

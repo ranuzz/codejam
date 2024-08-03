@@ -1,0 +1,6 @@
+{
+  "elixirLS.projectDir": "codejam_umbrella",
+  "emmet.includeLanguages": {
+    "phoenix-heex": "html"
+  }
+}
