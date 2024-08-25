@@ -27,4 +27,14 @@ defmodule CodejamWeb.ProjectLive.All do
     </div>
     """
   end
+
+  @impl true
+  def handle_event("delete_project", params, socket) do
+    Codejam.Explorer.delete_project(
+      socket.assigns.active_membership.organization_id,
+      params["project_id"]
+    )
+
+    {:noreply, redirect(socket, "/projects")}
+  end
 end

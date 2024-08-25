@@ -161,7 +161,6 @@ defmodule CodejamWeb.UserAuth do
   def fetch_active_membership(conn, _opts) do
     if conn.assigns[:current_user] do
       membership = Accounts.get_user_active_membership(conn.assigns[:current_user])
-      IO.inspect(membership)
       assign(conn, :active_membership, membership)
     else
       conn
@@ -328,8 +327,6 @@ defmodule CodejamWeb.UserAuth do
       active_membership = conn.assigns[:active_membership]
 
       if active_membership do
-        Logger.debug("Organization found #{active_membership.organization.id}")
-
         conn
         |> redirect(to: "/home")
         |> halt()

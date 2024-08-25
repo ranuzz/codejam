@@ -46,6 +46,13 @@ defmodule Codejam.Explorer do
     Repo.all(from(Project, where: [organization_id: ^organization_id]))
   end
 
+  def delete_project(organization_id, project_id) do
+    from(project in Project,
+      where: [id: ^project_id, organization_id: ^organization_id]
+    )
+    |> Repo.delete_all()
+  end
+
   ## GitObjects Object
 
   @doc """
@@ -63,10 +70,11 @@ defmodule Codejam.Explorer do
 
   def most_recent_commit(project_id) do
     Repo.one(
-      from g in GitObject,
+      from(g in GitObject,
         where: [project_id: ^project_id, object_type: "commit"],
         order_by: [desc: g.inserted_at],
         limit: 1
+      )
     )
   end
 
@@ -94,6 +102,13 @@ defmodule Codejam.Explorer do
 
   def list_notebook(organization_id, project_id) do
     Repo.all(from(Notebook, where: [organization_id: ^organization_id, project_id: ^project_id]))
+  end
+
+  def delete_notebook(organization_id, notebook_id) do
+    from(notebook in Notebook,
+      where: [id: ^notebook_id, organization_id: ^organization_id]
+    )
+    |> Repo.delete_all()
   end
 
   ## Note object
@@ -128,12 +143,13 @@ defmodule Codejam.Explorer do
 
   def max_seq(notebook_id, organization_id) do
     query =
-      from n in Note,
+      from(n in Note,
         select: max(n.seq),
         where: [
           organization_id: ^organization_id,
           notebook_id: ^notebook_id
         ]
+      )
 
     ms = Repo.one(query)
 
@@ -146,26 +162,28 @@ defmodule Codejam.Explorer do
 
   def next_note(notebook_id, organization_id, seq) do
     query =
-      from n in Note,
+      from(n in Note,
         where:
           n.organization_id == ^organization_id and
             n.notebook_id == ^notebook_id and
             n.seq > ^seq,
         order_by: [asc: :seq],
         limit: 1
+      )
 
     Repo.one(query)
   end
 
   def prev_note(notebook_id, organization_id, seq) do
     query =
-      from n in Note,
+      from(n in Note,
         where:
           n.organization_id == ^organization_id and
             n.notebook_id == ^notebook_id and
             n.seq < ^seq,
         order_by: [desc: :seq],
         limit: 1
+      )
 
     Repo.one(query)
   end

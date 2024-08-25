@@ -82,8 +82,25 @@ defmodule CodejamWeb.ProjectLive.Show do
   end
 
   @impl true
+  def handle_event("delete_notebook", params, socket) do
+    Codejam.Explorer.delete_notebook(
+      socket.assigns.active_membership.organization_id,
+      params["notebook_id"]
+    )
+
+    notify_parent({:removed, %{id: params["notebook_id"]}})
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({CodejamWeb.ProjectLive.Show, {:saved, notbook}}, socket) do
     {:noreply, stream_insert(socket, :notbooks, notbook)}
+  end
+
+  @impl true
+  def handle_info({CodejamWeb.ProjectLive.Show, {:removed, notbook}}, socket) do
+    {:noreply, stream_delete(socket, :notbooks, notbook)}
   end
 
   defp notify_parent(msg) do

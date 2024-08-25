@@ -5,7 +5,6 @@ defmodule CodejamWeb.OrganizationLive.Home do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.inspect(socket)
     active_membership = socket.assigns[:active_membership]
 
     integrations =

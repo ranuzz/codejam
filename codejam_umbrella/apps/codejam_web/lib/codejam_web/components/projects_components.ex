@@ -1,5 +1,6 @@
 defmodule CodejamWeb.ProjectsComponents do
   use Phoenix.Component
+  alias Phoenix.LiveView.JS
 
   @doc """
   Grid of project to display all available projects
@@ -75,9 +76,14 @@ defmodule CodejamWeb.ProjectsComponents do
           <CodejamWeb.LibraryComponents.link_button href={"/project/" <> @row_item.(row).id}>
             Open
           </CodejamWeb.LibraryComponents.link_button>
-          <CodejamWeb.LibraryComponents.link_button href={"/project/" <> @row_item.(row).id}>
+          <button
+            phx-click={
+              JS.push("delete_project", value: %{project_id: @row_item.(row).id})
+            }
+            class="primary"
+          >
             Delete
-          </CodejamWeb.LibraryComponents.link_button>
+          </button>
         </div>
       </div>
     </div>
@@ -120,12 +126,14 @@ defmodule CodejamWeb.ProjectsComponents do
           >
             Open
           </CodejamWeb.LibraryComponents.link_button>
-          <CodejamWeb.LibraryComponents.link_button
-            href={"/project/" <> row.project_id <> "/notebook/" <> row.id}
+          <button
+            phx-click={
+              JS.push("delete_notebook", value: %{notebook_id: row.id})
+            }
             class="primary"
           >
             Delete
-          </CodejamWeb.LibraryComponents.link_button>
+          </button>
         </div>
       </div>
     </div>
