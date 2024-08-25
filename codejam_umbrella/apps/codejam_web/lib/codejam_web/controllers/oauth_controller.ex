@@ -7,10 +7,10 @@ defmodule CodejamWeb.OauthController do
         Codejam.Accounts.create_github_integration(token, organization_id)
 
       {:error, _} ->
-        redirect(conn, to: "/organization/" <> params["state"] <> "?success=false")
+        redirect(conn, to: "/home" <> "?success=false")
     end
 
-    redirect(conn, to: "/organization/" <> params["state"])
+    redirect(conn, to: "/home")
   end
 
   def github_auth(conn, _params) do

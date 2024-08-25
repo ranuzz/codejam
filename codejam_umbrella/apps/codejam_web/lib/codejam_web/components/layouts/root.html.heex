@@ -54,7 +54,7 @@
               <ul class="px-2 py-2">
                 <li>
                   <.link
-                    href={"/organization/" <> @active_membership.organization_id <> "/projects"}
+                    href={"/projects"}
                     class="px-2 py-2 mt-5 text-sm text-gray-900 rounded-md hover:bg-violet-200"
                   >
                     Projects
@@ -91,7 +91,7 @@
                 <%= if @active_membership do %>
                   <li>
                     <.link
-                      href={"/organization/" <> @active_membership.organization_id <>"/settings"}
+                      href={"/settings"}
                       class="px-2 py-2 text-sm text-gray-700 rounded-md hover:bg-violet-200"
                     >
                       Settings

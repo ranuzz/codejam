@@ -14,13 +14,19 @@ defmodule CodejamWeb.ProjectLive.Show do
   end
 
   @impl true
-  def mount(%{"id" => id, "project_id" => project_id}, _session, socket) do
+  def mount(%{"project_id" => project_id}, _session, socket) do
     subscribe()
 
     socket =
       socket
-      |> stream(:notbooks, Codejam.Explorer.list_notebook(id, project_id))
-      |> assign(:organization_id, id)
+      |> stream(
+        :notbooks,
+        Codejam.Explorer.list_notebook(
+          socket.assigns.active_membership.organization_id,
+          project_id
+        )
+      )
+      |> assign(:organization_id, socket.assigns.active_membership.organization_id)
 
     {:ok, socket}
   end

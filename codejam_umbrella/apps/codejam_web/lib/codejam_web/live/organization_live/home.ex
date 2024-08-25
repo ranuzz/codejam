@@ -4,24 +4,29 @@ defmodule CodejamWeb.OrganizationLive.Home do
   import Ecto.Query, only: [from: 2]
 
   @impl true
-  def mount(%{"id" => id}, _session, socket) do
+  def mount(_params, _session, socket) do
+    IO.inspect(socket)
+    active_membership = socket.assigns[:active_membership]
+
     integrations =
       Codejam.Repo.all(
         from(integtration in Codejam.Accounts.Integration,
-          where: integtration.organization_id == ^id
+          where: integtration.organization_id == ^active_membership.organization_id
         )
       )
 
     projects =
       Codejam.Repo.all(
-        from(project in Codejam.Explorer.Project, where: project.organization_id == ^id)
+        from(project in Codejam.Explorer.Project,
+          where: project.organization_id == ^active_membership.organization_id
+        )
       )
 
     socket =
       socket
       |> assign(:integrations, integrations)
       |> assign(:projects, projects)
-      |> assign(:organization_id, id)
+      |> assign(:organization_id, active_membership.organization_id)
 
     {:ok, socket}
   end
@@ -76,7 +81,7 @@ defmodule CodejamWeb.OrganizationLive.Home do
   def handle_event("create_project", _params, socket) do
     {:noreply,
      push_redirect(socket,
-       to: "/organization/" <> socket.assigns.organization_id <> "/project/new"
+       to: "/project/new"
      )}
   end
 
@@ -84,7 +89,7 @@ defmodule CodejamWeb.OrganizationLive.Home do
   def handle_event("projects", _params, socket) do
     {:noreply,
      push_redirect(socket,
-       to: "/organization/" <> socket.assigns.organization_id <> "/projects"
+       to: "/projects"
      )}
   end
 end
