@@ -11,8 +11,16 @@ defmodule Codejam.Github do
     GithubClient.get_authorization_url(state)
   end
 
+  def get_auth_authorization_url(state) do
+    GithubClient.get_auth_authorization_url(state)
+  end
+
   def get_access_token(params) do
     GithubClient.get_access_token(params)
+  end
+
+  def get_auth_access_token(params) do
+    GithubClient.get_auth_access_token(params)
   end
 
   def search_repo(organization_id, query) do
@@ -79,6 +87,10 @@ defmodule Codejam.Github do
         :organization_id => organization_id
       })
     end
+  end
+
+  def user_info_auth(token) do
+    GithubClient.user_info_auth(token)
   end
 
   defp get_token(organization_id) do

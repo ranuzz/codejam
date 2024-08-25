@@ -13,6 +13,7 @@ defmodule CodejamWeb.Router do
     plug(:fetch_current_user)
     plug(:fetch_invited_memberships)
     plug(:fetch_memberships)
+    plug(:fetch_active_membership)
   end
 
   pipeline :api do
@@ -22,6 +23,11 @@ defmodule CodejamWeb.Router do
   scope "/admin", CodejamWeb do
     pipe_through([:browser, :require_authenticated_user, :require_admin_user])
     get("/home", AdminController, :home)
+  end
+
+  scope "/oauth/callback/auth", CodejamWeb do
+    pipe_through([:browser, :redirect_if_user_is_authenticated])
+    get("/github", OauthController, :github_auth)
   end
 
   scope "/oauth/callback", CodejamWeb do

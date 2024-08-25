@@ -23,14 +23,14 @@
     </script>
 
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <link phx-track-static rel="stylesheet" href={~p"/assets/syntax/colorfull.css"} />
+    <link phx-track-static rel="stylesheet" href={~p"/assets/css/syntax/colorfull.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
   <body>
     <.navbar>
       <:left_actions>
-        <%= if @current_user && length(@memberships) != 0 do %>
+        <%= if @current_user && @active_membership do %>
           <div>
             <button
               class="text-white bg-violet-700 rounded-lg text-sm px-2 py-2.5 text-center inline-flex items-center"
@@ -54,7 +54,7 @@
               <ul class="px-2 py-2">
                 <li>
                   <.link
-                    href={"/organization/" <> hd(@memberships).organization_id <> "/projects"}
+                    href={"/organization/" <> @active_membership.organization_id <> "/projects"}
                     class="px-2 py-2 mt-5 text-sm text-gray-900 rounded-md hover:bg-violet-200"
                   >
                     Projects
@@ -88,14 +88,16 @@
               class="absolute right-0.5 z-10 hidden divide-y divide-gray-100 rounded-lg bg-violet-100 shadow w-24"
             >
               <ul class="px-2 py-2">
-                <li>
-                  <.link
-                    href={"/organization/" <> hd(@memberships).organization_id <>"/settings"}
-                    class="px-2 py-2 text-sm text-gray-700 rounded-md hover:bg-violet-200"
-                  >
-                    Settings
-                  </.link>
-                </li>
+                <%= if @active_membership do %>
+                  <li>
+                    <.link
+                      href={"/organization/" <> @active_membership.organization_id <>"/settings"}
+                      class="px-2 py-2 text-sm text-gray-700 rounded-md hover:bg-violet-200"
+                    >
+                      Settings
+                    </.link>
+                  </li>
+                <% end  %>
                 <li>
                   <.link
                     href={~p"/users/log_out"}

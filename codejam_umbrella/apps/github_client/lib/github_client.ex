@@ -26,6 +26,18 @@ defmodule GithubClient do
     oauth_url
   end
 
+  def get_auth_authorization_url(state) do
+    oauth_config = Application.fetch_env!(:codejam, Codejam.Github.Oauth)
+
+    oauth_url =
+      "https://github.com/login/oauth/authorize?client_id=" <>
+        oauth_config[:github_auth_client_id] <>
+        "&redirect_uri=" <>
+        oauth_config[:github_auth_redirect_uri] <> "&state=" <> state
+
+    oauth_url
+  end
+
   @doc """
   get_access_token
   use OAuth authorization code to get access token
@@ -72,6 +84,40 @@ defmodule GithubClient do
     end
   end
 
+  def get_auth_access_token(params) do
+    code = params["code"]
+    random_string = params["state"]
+    oauth_config = Application.fetch_env!(:codejam, Codejam.Github.Oauth)
+
+    {_, body} =
+      Poison.encode(%{
+        "client_id" => "#{oauth_config[:github_auth_client_id]}",
+        "client_secret" => "#{oauth_config[:github_auth_client_secret]}",
+        "redirect_uri" => "#{oauth_config[:github_auth_redirect_uri]}",
+        "code" => "#{code}"
+      })
+
+    case HTTPoison.post(
+           "https://github.com/login/oauth/access_token",
+           body,
+           [{"content-type", "application/json"}, {"Accept", "application/json"}]
+         ) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        # sample structure: {"access_token":"","token_type":"bearer","scope":""}
+        {_, parsed_body} = Poison.decode(body)
+        {:ok, %{token: parsed_body["access_token"], state: random_string}}
+
+      {:ok, %HTTPoison.Response{status_code: 404}} ->
+        {:error, "Not Found"}
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason}
+
+      _ ->
+        {:error, "Unknown Error"}
+    end
+  end
+
   @doc """
   list_repo
   get a list of public and private to choose from
@@ -92,6 +138,17 @@ defmodule GithubClient do
     case http_get(@api_base <> "/user", get_headers(token)) do
       {:ok, response} ->
         response["login"]
+
+      {:error, reason} ->
+        Logger.debug("#{inspect(reason)}")
+        nil
+    end
+  end
+
+  def user_info_auth(token) do
+    case http_get(@api_base <> "/user", get_headers(token)) do
+      {:ok, response} ->
+        response
 
       {:error, reason} ->
         Logger.debug("#{inspect(reason)}")

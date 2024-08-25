@@ -9,6 +9,7 @@ defmodule Codejam.Accounts.Membership do
 
   schema "memberships" do
     field(:role, :string)
+    field(:active, :boolean)
     field(:invited_name, :string)
     field(:invited_email, :string)
     belongs_to(:organization, Organization, type: :binary_id)
@@ -56,8 +57,13 @@ defmodule Codejam.Accounts.Membership do
 
   def get_membership(user_id, organization_id) do
     Codejam.Repo.all(
-      from membership in Codejam.Accounts.Membership,
+      from(membership in Codejam.Accounts.Membership,
         where: membership.organization_id == ^organization_id and membership.user_id == ^user_id
+      )
     )
+  end
+
+  def user_id_active_query(user_id) do
+    from(Membership, where: [user_id: ^user_id, active: true], limit: 1)
   end
 end

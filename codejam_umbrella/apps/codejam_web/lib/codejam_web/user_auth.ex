@@ -47,6 +47,14 @@ defmodule CodejamWeb.UserAuth do
     |> redirect(to: ~c"/users/reset_password")
   end
 
+  def log_in_oauth_user(conn, user, _params) do
+    token = Accounts.generate_user_session_token(user)
+
+    conn
+    |> put_token_in_session(token)
+    |> redirect(to: signed_in_path(conn))
+  end
+
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
     put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
   end
@@ -138,6 +146,23 @@ defmodule CodejamWeb.UserAuth do
     if conn.assigns[:current_user] do
       memberships = Accounts.get_user_memberships(conn.assigns[:current_user])
       assign(conn, :memberships, memberships)
+    else
+      conn
+    end
+  end
+
+  @doc """
+  Get active membership
+  There can only be one for regular users
+  take the first one if there are multiple
+
+  This pliug must be called after fetch_current_user
+  """
+  def fetch_active_membership(conn, _opts) do
+    if conn.assigns[:current_user] do
+      membership = Accounts.get_user_active_membership(conn.assigns[:current_user])
+      IO.inspect(membership)
+      assign(conn, :active_membership, membership)
     else
       conn
     end

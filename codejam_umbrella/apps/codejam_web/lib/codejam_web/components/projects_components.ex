@@ -75,6 +75,9 @@ defmodule CodejamWeb.ProjectsComponents do
           <CodejamWeb.LibraryComponents.link_button href={"/organization/" <> @row_item.(row).organization_id <> "/project/" <> @row_item.(row).id}>
             Open
           </CodejamWeb.LibraryComponents.link_button>
+          <CodejamWeb.LibraryComponents.link_button href={"/organization/" <> @row_item.(row).organization_id <> "/project/" <> @row_item.(row).id}>
+            Delete
+          </CodejamWeb.LibraryComponents.link_button>
         </div>
       </div>
     </div>
@@ -116,6 +119,12 @@ defmodule CodejamWeb.ProjectsComponents do
             class="primary"
           >
             Open
+          </CodejamWeb.LibraryComponents.link_button>
+          <CodejamWeb.LibraryComponents.link_button
+            href={"/organization/" <> row.organization_id <> "/project/" <> row.project_id <> "/notebook/" <> row.id}
+            class="primary"
+          >
+            Delete
           </CodejamWeb.LibraryComponents.link_button>
         </div>
       </div>
