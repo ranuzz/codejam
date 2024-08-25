@@ -72,10 +72,10 @@ defmodule CodejamWeb.ProjectsComponents do
           <p><a href={@row_item.(row).url} target="_blank"><%= @row_item.(row).url %></a></p>
         </div>
         <div class="flex flex-end mt-2">
-          <CodejamWeb.LibraryComponents.link_button href={"/organization/" <> @row_item.(row).organization_id <> "/project/" <> @row_item.(row).id}>
+          <CodejamWeb.LibraryComponents.link_button href={"/project/" <> @row_item.(row).id}>
             Open
           </CodejamWeb.LibraryComponents.link_button>
-          <CodejamWeb.LibraryComponents.link_button href={"/organization/" <> @row_item.(row).organization_id <> "/project/" <> @row_item.(row).id}>
+          <CodejamWeb.LibraryComponents.link_button href={"/project/" <> @row_item.(row).id}>
             Delete
           </CodejamWeb.LibraryComponents.link_button>
         </div>
@@ -115,13 +115,13 @@ defmodule CodejamWeb.ProjectsComponents do
         </div>
         <div class="flex flex-end mt-2">
           <CodejamWeb.LibraryComponents.link_button
-            href={"/organization/" <> row.organization_id <> "/project/" <> row.project_id <> "/notebook/" <> row.id}
+            href={"/project/" <> row.project_id <> "/notebook/" <> row.id}
             class="primary"
           >
             Open
           </CodejamWeb.LibraryComponents.link_button>
           <CodejamWeb.LibraryComponents.link_button
-            href={"/organization/" <> row.organization_id <> "/project/" <> row.project_id <> "/notebook/" <> row.id}
+            href={"/project/" <> row.project_id <> "/notebook/" <> row.id}
             class="primary"
           >
             Delete

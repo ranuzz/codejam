@@ -34,9 +34,10 @@ defmodule CodejamWeb.OrganizationLive.Create do
     Codejam.Repo.insert(%Codejam.Accounts.Membership{
       user_id: user.id,
       role: "user",
-      organization_id: created_organization.id
+      organization_id: created_organization.id,
+      active: true
     })
 
-    {:noreply, redirect(socket, to: "/organization/" <> created_organization.id)}
+    {:noreply, redirect(socket, to: "/home")}
   end
 end

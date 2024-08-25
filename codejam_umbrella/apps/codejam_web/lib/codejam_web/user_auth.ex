@@ -209,8 +209,9 @@ defmodule CodejamWeb.UserAuth do
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
+    socket = mount_active_membership(socket, session)
 
-    if socket.assigns.current_user do
+    if socket.assigns.current_user && socket.assigns.active_membership do
       {:cont, socket}
     else
       socket =
@@ -224,8 +225,9 @@ defmodule CodejamWeb.UserAuth do
 
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
+    socket = mount_active_membership(socket, session)
 
-    if socket.assigns.current_user do
+    if socket.assigns.current_user && socket.assigns.active_membership do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
     else
       {:cont, socket}
@@ -236,6 +238,14 @@ defmodule CodejamWeb.UserAuth do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
+      end
+    end)
+  end
+
+  defp mount_active_membership(socket, _session) do
+    Phoenix.Component.assign_new(socket, :active_membership, fn ->
+      if socket.assigns.current_user do
+        Accounts.get_user_active_membership(socket.assigns.current_user)
       end
     end)
   end
@@ -315,19 +325,17 @@ defmodule CodejamWeb.UserAuth do
          Map.has_key?(conn.assigns[:current_user], :role) &&
          conn.assigns[:current_user].role == "user" do
       invited_memberships = conn.assigns[:invited_memberships]
-      memberships = conn.assigns[:memberships]
+      active_membership = conn.assigns[:active_membership]
 
-      Logger.debug("Memberships #{inspect(memberships)}")
-
-      if Kernel.length(memberships) !== 0 do
-        Logger.debug("Organization found #{hd(memberships).organization.id}")
+      if active_membership do
+        Logger.debug("Organization found #{active_membership.organization.id}")
 
         conn
-        |> redirect(to: "/organization/#{hd(memberships).organization.id}")
+        |> redirect(to: "/home")
         |> halt()
       end
 
-      if Kernel.length(invited_memberships) !== 0 && Kernel.length(memberships) === 0 do
+      if Kernel.length(invited_memberships) !== 0 do
         first_invitation = hd(invited_memberships)
 
         Membership.update_user_id(first_invitation, %{"user_id" => conn.assigns[:current_user].id})
@@ -337,7 +345,7 @@ defmodule CodejamWeb.UserAuth do
         |> halt()
       end
 
-      if Kernel.length(invited_memberships) === 0 && Kernel.length(memberships) === 0 do
+      if Kernel.length(invited_memberships) === 0 do
         conn
         |> redirect(to: ~p"/organization/create")
         |> halt()

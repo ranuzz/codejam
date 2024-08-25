@@ -228,7 +228,7 @@ defmodule CodejamWeb.UserSettingsLive do
     {:ok, push_navigate(socket, to: ~p"/")}
   end
 
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     user = socket.assigns.current_user
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
@@ -238,7 +238,7 @@ defmodule CodejamWeb.UserSettingsLive do
     integrations =
       Codejam.Repo.all(
         from(integtration in Codejam.Accounts.Integration,
-          where: integtration.organization_id == ^params["id"]
+          where: integtration.organization_id == ^socket.assigns.active_membership.organization_id
         )
       )
 
@@ -255,11 +255,14 @@ defmodule CodejamWeb.UserSettingsLive do
       |> assign(:name_form, to_form(name_changeset))
       |> assign(:avatar_form, to_form(avatar_changeset))
       |> assign(:trigger_submit, false)
-      |> assign(:oauth_url, Codejam.Github.get_authorization_url(params["id"]))
+      |> assign(
+        :oauth_url,
+        Codejam.Github.get_authorization_url(socket.assigns.active_membership.organization_id)
+      )
       |> assign(:is_github_connected, is_github_connected)
       |> assign(:uploaded_files, [])
       |> assign(:invite_form, to_form(%{"email" => nil}))
-      |> assign(:organization_id, params["id"])
+      |> assign(:organization_id, socket.assigns.active_membership.organization_id)
       |> allow_upload(:avatar, accept: ~w(.jpg .jpeg), max_entries: 1)
 
     {:ok, socket}

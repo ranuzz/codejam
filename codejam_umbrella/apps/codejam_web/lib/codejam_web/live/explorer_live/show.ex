@@ -10,7 +10,7 @@ defmodule CodejamWeb.ExplorerLive.Show do
 
   @impl true
   def mount(
-        %{"id" => organization_id, "project_id" => project_id, "notebook_id" => notebook_id},
+        %{"project_id" => project_id, "notebook_id" => notebook_id},
         _session,
         socket
       ) do
@@ -34,7 +34,10 @@ defmodule CodejamWeb.ExplorerLive.Show do
     root_file = Codejam.Explorer.get_git_objects(String.split(root_tree.content, ","), project_id)
 
     membership =
-      Codejam.Accounts.Membership.get_membership(socket.assigns.current_user.id, organization_id)
+      Codejam.Accounts.Membership.get_membership(
+        socket.assigns.current_user.id,
+        socket.assigns.active_membership.organization_id
+      )
 
     socket =
       socket
@@ -44,7 +47,7 @@ defmodule CodejamWeb.ExplorerLive.Show do
       |> assign(:parsed_file_content, [])
       |> assign(:open_files, root_file)
       |> assign(:membership_id, hd(membership).id)
-      |> assign(:organization_id, organization_id)
+      |> assign(:organization_id, socket.assigns.active_membership.organization_id)
       |> assign(:notebook_id, notebook_id)
       |> assign(:project_id, project_id)
       |> assign(:commit, commit)

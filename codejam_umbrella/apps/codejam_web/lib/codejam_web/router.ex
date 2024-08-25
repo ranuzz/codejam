@@ -94,17 +94,17 @@ defmodule CodejamWeb.Router do
       # live("/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email)
       # Oboarding
       live("/organization/create", OrganizationLive.Create, :create)
-      live("/organization/:id", OrganizationLive.Home, :home)
+      live("/home", OrganizationLive.Home, :home)
       # Settings
-      live("/organization/:id/settings", UserSettingsLive, :edit)
-      live("/organization/:id/confirm_email/:token", UserSettingsLive, :confirm_email)
+      live("/settings", UserSettingsLive, :edit)
+      live("/confirm_email/:token", UserSettingsLive, :confirm_email)
       # Project
-      live("/organization/:id/projects", ProjectLive.All, :all)
-      live("/organization/:id/project/new", ProjectLive.New, :new)
-      live("/organization/:id/project/:project_id", ProjectLive.Show, :show)
+      live("/projects", ProjectLive.All, :all)
+      live("/project/new", ProjectLive.New, :new)
+      live("/project/:project_id", ProjectLive.Show, :show)
       # Explorer
       live(
-        "/organization/:id/project/:project_id/notebook/:notebook_id",
+        "/project/:project_id/notebook/:notebook_id",
         ExplorerLive.Show,
         :show
       )

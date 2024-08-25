@@ -3,14 +3,14 @@ defmodule CodejamWeb.ProjectLive.New do
   alias Codejam.Explorer
 
   @impl true
-  def mount(%{"id" => organization_id}, _session, socket) do
+  def mount(_params, _session, socket) do
     form_fields = %{"query" => ""}
 
     socket =
       socket
       |> assign(:form, to_form(form_fields))
       |> assign(:searched_repos, [])
-      |> assign(:organization_id, organization_id)
+      |> assign(:organization_id, socket.assigns.active_membership.organization_id)
 
     {:ok, socket}
   end
