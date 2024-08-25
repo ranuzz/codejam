@@ -10,3 +10,12 @@ Here's what sets Codejam apart:
 - **Real-time collaboration**: Debug faster with instant feedback and code reviews, fostering a dynamic and efficient development environment.
 
 Codejam helps your team collaborate effectively, stay organized, and ship high-quality code faster.
+
+## Getting Started
+
+TBD
+
+## Demo 
+
+https://github.com/user-attachments/assets/e81c21f6-1759-45d9-81c4-11313a736980
+
