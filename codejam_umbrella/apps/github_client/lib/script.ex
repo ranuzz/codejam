@@ -43,6 +43,9 @@ defmodule GithubClient.Script do
       "get_blob" ->
         Logger.debug("#{inspect(GithubClient.get_blob(token, owner, repo, sha))}")
 
+      "get_auth_authorization_url" ->
+        Logger.debug("#{GithubClient.get_auth_authorization_url("state")}")
+
       _ ->
         IO.puts("not a valid method")
     end

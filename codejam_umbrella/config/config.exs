@@ -35,7 +35,7 @@ config :codejam_web, CodejamWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Codejam.PubSub,
-  live_view: [signing_salt: ""]
+  live_view: [signing_salt: System.get_env("CODEJAM_SESSION_SALT")]
 
 # Configure esbuild (the version is required)
 config :esbuild,

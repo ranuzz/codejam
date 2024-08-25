@@ -173,7 +173,10 @@ defmodule CodejamWeb.ExplorerComponents do
         </button>
         <button
           type="submit"
-          phx-click={JS.push("delete_note", value: %{note_id: @note.id})}
+          phx-click={
+            JS.push("delete_note", value: %{note_id: @note.id})
+            |> JS.toggle(to: "#note-sidebar", in: "block fade-in", out: "hidden fade-out")
+            }
           class="text-white bg-gradient-to-r from-violet-500 via-violet-600 to-violet-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-violet-300 dark:focus:ring-violet-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
         >
           Delete
@@ -246,6 +249,7 @@ defmodule CodejamWeb.ExplorerComponents do
                   JS.dispatch("codejam:create-editor",
                     to: "#note-creator"
                   )
+                  |> JS.toggle(to: "#note-sidebar", in: "block fade-in", out: "hidden fade-out")
                 }
                 class="text-white bg-gradient-to-r from-violet-500 via-violet-600 to-violet-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-violet-300 dark:focus:ring-violet-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               >

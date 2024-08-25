@@ -125,7 +125,10 @@ end
 config :codejam, Codejam.Github.Oauth,
   github_client_id: System.get_env("CODEJAM_GITHUB_CLIENT_ID"),
   github_client_secret: System.get_env("CODEJAM_GITHUB_CLIENT_SECRET"),
-  github_redirect_uri: "http://localhost:4000/oauth/callback/github"
+  github_redirect_uri: "http://localhost:4000/oauth/callback/github",
+  github_auth_client_id: System.get_env("CODEJAM_GITHUB_AUTH_CLIENT_ID"),
+  github_auth_client_secret: System.get_env("CODEJAM_GITHUB_AUTH_CLIENT_SECRET"),
+  github_auth_redirect_uri: "http://localhost:4000/oauth/callback/auth/github"
 
 config :codejam, Codejam.Database.Config,
   database: System.get_env("CODEJAM_POSTGRES_DATABASE"),

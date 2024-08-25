@@ -58,6 +58,7 @@ defmodule Codejam.Accounts do
       ** (Ecto.NoResultsError)
 
   """
+
   def get_user!(id), do: Repo.get!(User, id)
 
   ## User registration
@@ -392,6 +393,13 @@ defmodule Codejam.Accounts do
   """
   def get_user_memberships(user) do
     Repo.all(Membership.user_id_query(user.id)) |> Codejam.Repo.preload(:organization)
+  end
+
+  @doc """
+  get first active membership given user
+  """
+  def get_user_active_membership(user) do
+    Repo.one(Membership.user_id_active_query(user.id)) |> Codejam.Repo.preload(:organization)
   end
 
   @doc """

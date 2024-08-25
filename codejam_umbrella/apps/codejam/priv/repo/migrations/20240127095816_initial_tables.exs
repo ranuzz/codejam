@@ -54,6 +54,9 @@ defmodule Codejam.Repo.Migrations.CreateInitialTables do
       add(:id, :uuid, primary_key: true)
       add(:role, :string)
 
+      # Only one membership can be active per user
+      add(:active, :boolean, default: false)
+
       add(:organization_id, references(:organizations, type: :uuid, on_delete: :delete_all),
         null: false
       )
