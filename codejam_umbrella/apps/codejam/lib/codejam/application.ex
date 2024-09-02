@@ -12,9 +12,10 @@ defmodule Codejam.Application do
       {DNSCluster, query: Application.get_env(:codejam, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Codejam.PubSub},
       # Start the Finch HTTP client for sending emails
-      {Finch, name: Codejam.Finch}
+      {Finch, name: Codejam.Finch},
       # Start a worker by calling: Codejam.Worker.start_link(arg)
       # {Codejam.Worker, arg}
+      {Task.Supervisor, name: Codejam.TaskSupervisor}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Codejam.Supervisor)

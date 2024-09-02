@@ -25,12 +25,14 @@ defmodule Codejam.Explorer do
 
   """
   def create_project(attrs) do
-    case %Project{}
-         |> Project.changeset(attrs)
-         |> Repo.insert() do
-      {:ok, project} -> Task.async(fn -> Codejam.SyncRepo.sync_repo(project) end)
-      _ -> Logger.debug("failed to create project")
-    end
+    {:ok, project} =
+      %Project{}
+      |> Project.changeset(attrs)
+      |> Repo.insert()
+
+    Task.Supervisor.start_child(Codejam.TaskSupervisor, fn ->
+      Codejam.SyncRepo.sync_repo(project)
+    end)
   end
 
   def project_exist?(name, organization_id) do
