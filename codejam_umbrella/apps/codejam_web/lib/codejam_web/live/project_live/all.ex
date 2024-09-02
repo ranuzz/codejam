@@ -35,6 +35,6 @@ defmodule CodejamWeb.ProjectLive.All do
       params["project_id"]
     )
 
-    {:noreply, redirect(socket, "/projects")}
+    {:noreply, redirect(socket, to: "/projects")}
   end
 end
