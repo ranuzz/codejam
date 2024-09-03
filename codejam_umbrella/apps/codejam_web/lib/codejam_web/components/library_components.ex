@@ -30,7 +30,6 @@ defmodule CodejamWeb.LibraryComponents do
   """
 
   attr(:type, :string, default: nil)
-  attr(:class, :string, default: "primary")
   attr(:rest, :global, include: ~w(disabled form name value))
 
   slot(:inner_block, required: true)
@@ -39,12 +38,7 @@ defmodule CodejamWeb.LibraryComponents do
     ~H"""
     <button
       type={@type}
-      class={[
-        "btn",
-        "btn-active",
-        "btn-sm",
-        "btn-" <> @class
-      ]}
+      class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
       {@rest}
     >
       <%= render_slot(@inner_block) %>
@@ -53,7 +47,6 @@ defmodule CodejamWeb.LibraryComponents do
   end
 
   attr(:type, :string, default: nil)
-  attr(:class, :string, default: "primary")
   attr(:rest, :global, include: ~w(disabled form name value))
   attr(:icon, :string, default: "home")
 
@@ -61,12 +54,7 @@ defmodule CodejamWeb.LibraryComponents do
     ~H"""
     <button
       type={@type}
-      class={[
-        "btn",
-        "btn-outline",
-        "btn-xs",
-        "btn-" <> @class
-      ]}
+      class=""
       {@rest}
     >
       <span class="material-symbols-outlined material-symbols-outlined-small">
@@ -84,7 +72,7 @@ defmodule CodejamWeb.LibraryComponents do
   def link_button(assigns) do
     ~H"""
     <a
-      class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border rounded-lg border-gray-200 hover:bg-violet-100 hover:text-violet-700 focus:z-10 focus:ring-2 focus:ring-violet-700 focus:text-violet-700"
+      class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
       href={@href}
     >
       <%= render_slot(@inner_block) %>
@@ -380,12 +368,12 @@ defmodule CodejamWeb.LibraryComponents do
     <dl class="w-8/12 text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
       <%= for repo <- @repos do %>
         <div
-          class="flex flex-col pb-3"
+          class="flex flex-col p-5 my-2 bg-secondary border border-solid rounded-md cursor-pointer"
           key={repo.id}
-          phx-click="select_repo"
-          phx-value-url={repo.html_url}
-          phx-value-name={repo.full_name}
-          phx-value-branch={repo.default_branch}
+          phx-click={
+            JS.push("select_repo", value: %{url: repo.html_url, name: repo.full_name, branch: repo.default_branch})
+            |> JS.toggle(to: "#creating-project", in: "block fade-in", out: "hidden fade-out")
+          }
         >
           <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400"><%= repo.name %></dt>
           <dd class="text-lg font-semibold"><%= repo.full_name <> " | " <> repo.html_url %></dd>

@@ -23,6 +23,7 @@ defmodule CodejamWeb.ProjectLive.All do
   def render(assigns) do
     ~H"""
     <div class="mx-40 py-10">
+      <h2 class="text-4xl font-extrabold dark:text-white py-10 mx-2">Projects</h2>
       <CodejamWeb.ProjectsComponents.project_list id="org-projects" rows={@streams.projects} />
     </div>
     """
