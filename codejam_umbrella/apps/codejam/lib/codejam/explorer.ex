@@ -113,6 +113,12 @@ defmodule Codejam.Explorer do
     |> Repo.delete_all()
   end
 
+  def update_notebook(attr) do
+    notebook = Repo.get!(Notebook, attr.id)
+    notebook = Ecto.Changeset.change(notebook, title: attr.title)
+    Repo.update(notebook)
+  end
+
   ## Note object
 
   def create_note(attr) do

@@ -19,9 +19,13 @@ defmodule CodejamWeb.ProjectLive.New do
   def render(assigns) do
     ~H"""
     <div class="mx-40 py-10 w-full">
-      <h2 class="mb-2 text-lg font-semibold">Create Project</h2>
+      <h2 class="text-4xl font-extrabold dark:text-white py-10">Create Project</h2>
       <div class="flex flex-col py-10">
         <.github_repo_search form={@form} />
+        <div
+          id="creating-project"
+          class="hidden border border-solid rounded-md w-80 p-5 mt-5 shadow-[-1px_0_5px_rgba(0,0,0,0.3)] bg-violet-50"
+        >Creating Project...</div>
         <.repository_list_new repos={@searched_repos} />
       </div>
     </div>
@@ -56,6 +60,10 @@ defmodule CodejamWeb.ProjectLive.New do
     if !Explorer.project_exist?(params["name"], socket.assigns.organization_id) do
       Explorer.create_project(Map.put(params, "organization_id", socket.assigns.organization_id))
     end
+
+    socket =
+      socket
+      |> assign(:searched_repos, [])
 
     {:noreply, socket}
   end

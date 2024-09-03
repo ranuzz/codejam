@@ -72,18 +72,18 @@ defmodule CodejamWeb.ProjectsComponents do
           </h2>
           <p><a href={@row_item.(row).url} target="_blank"><%= @row_item.(row).url %></a></p>
         </div>
-        <div class="flex flex-end mt-2">
+        <div class="flex flex-end mt-2 gap-2">
           <CodejamWeb.LibraryComponents.link_button href={"/project/" <> @row_item.(row).id}>
             Open
           </CodejamWeb.LibraryComponents.link_button>
-          <button
+          <CodejamWeb.LibraryComponents.color_button
             phx-click={
               JS.push("delete_project", value: %{project_id: @row_item.(row).id})
             }
             class="primary"
           >
             Delete
-          </button>
+          </CodejamWeb.LibraryComponents.color_button>
         </div>
       </div>
     </div>
@@ -115,25 +115,29 @@ defmodule CodejamWeb.ProjectsComponents do
         class="flex flex-row justify-between gap-4 w-full justify-space-between bg-secondary border border-solid rounded-md p-2 m-2"
       >
         <div>
-          <h2 class="font-bold">
-            <%= row.title %>
-          </h2>
+          <form id={row.id} class="flex center" phx-submit="update_notebook_title">
+            <div class="mt-2">
+              <CodejamWeb.LibraryComponents.icon_button type="submit" icon="edit" />
+            </div>
+            <input type="text" class="font-bold border-transparent focus:border-transparent focus:ring-0" name="title" value={row.title} />
+            <input type="hidden" name="id" value={row.id} />
+          </form>
         </div>
-        <div class="flex flex-end mt-2">
+        <div class="flex flex-end mt-2 gap-2">
           <CodejamWeb.LibraryComponents.link_button
             href={"/project/" <> row.project_id <> "/notebook/" <> row.id}
             class="primary"
           >
             Open
           </CodejamWeb.LibraryComponents.link_button>
-          <button
+          <CodejamWeb.LibraryComponents.color_button
             phx-click={
               JS.push("delete_notebook", value: %{notebook_id: row.id})
             }
             class="primary"
           >
             Delete
-          </button>
+          </CodejamWeb.LibraryComponents.color_button>
         </div>
       </div>
     </div>

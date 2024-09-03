@@ -35,8 +35,8 @@ defmodule CodejamWeb.ProjectLive.Show do
   def render(assigns) do
     ~H"""
     <div class="mx-40 py-10">
-      <h1 class="font-bold"><%= @project.name %></h1>
-      <div class="flex flex-row gap-2 mt-2">
+      <h2 class="text-4xl font-extrabold dark:text-white pt-10 mx-2"><%= @project.name %></h2>
+      <div class="flex flex-row gap-2 mt-2 mx-2 pb-10">
         <CodejamWeb.LibraryComponents.color_button
           type="button"
           class="primary"
@@ -89,6 +89,13 @@ defmodule CodejamWeb.ProjectLive.Show do
     )
 
     notify_parent({:removed, %{id: params["notebook_id"]}})
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("update_notebook_title", params, socket) do
+    Codejam.Explorer.update_notebook(%{id: params["id"], title: params["title"]})
 
     {:noreply, socket}
   end
